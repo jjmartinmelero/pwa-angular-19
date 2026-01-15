@@ -31,7 +31,7 @@ export class CheckUpdateComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.updateAvailable.set(true);
+    
     if (this._swUpdate.isEnabled) {
       this._swUpdate.versionUpdates.subscribe((ev: VersionEvent) => {
         if (ev.type === 'VERSION_READY') {
