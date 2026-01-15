@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import { Prediction } from './models/prediction.interface';
+import * as tf from '@tensorflow/tfjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class ObjectDetectionService {
 
   async loadModel() {
     try {
+      await tf.setBackend('webgl');
       this.isPredicting.set(true);
       const loadedModel = await mobilenet.load({ version: 2, alpha: 1.0 });
       this._model.set(loadedModel);
@@ -29,11 +31,12 @@ export class ObjectDetectionService {
     try {
       await new Promise((resolve) => (image.onload = resolve))
       return await this._model()?.classify(image) ?? [];
-
     } catch (error) {
       console.log(error);
       this.isPredicting.set(false);
       return [];
+    } finally {
+      this.isPredicting.set(false);
     }
 
   }
